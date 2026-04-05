@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Stock Screener Dashboard</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f6f8;
+padding:30px;
+}
+
+h1{
+text-align:center;
+}
+
+.controls{
+text-align:center;
+margin-bottom:20px;
+}
+
+button{
+padding:10px 20px;
+background:#2c7be5;
+border:none;
+color:white;
+font-size:16px;
+cursor:pointer;
+border-radius:6px;
+}
+
+button:hover{
+background:#1a5edb;
+}
+
+table{
+border-collapse:collapse;
+width:70%;
+margin:auto;
+background:white;
+box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+th,td{
+padding:12px;
+border-bottom:1px solid #eee;
+}
+
+th{
+background:#2c7be5;
+color:white;
+}
+
+tr:hover{
+background:#f2f6ff;
+}
+
+.price{
+font-weight:bold;
+color:#2e7d32;
+}
+
+.status{
+text-align:center;
+margin-bottom:10px;
+color:#777;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Stock Screener Dashboard</h1>
+
+<div class="controls">
+
+<button onclick="runScreener()">Run Screener</button>
+
+</div>
+
+<div class="status" id="status">
+Ready
+</div>
+
+<table id="stockTable">
+
+<tr>
+<th>Company</th>
+<th>Price</th>
+</tr>
+
+</table>
+
+<script>
+
+async function runScreener(){
+
+document.getElementById("status").innerText="Running screener...";
+
+let response = await fetch("/run");
+
+let data = await response.json();
+
+let table = document.getElementById("stockTable");
+
+table.innerHTML = `
+<tr>
+<th>Company</th>
+<th>Price</th>
+</tr>
+`;
+
+data.forEach(stock => {
+
+table.innerHTML += `
+<tr>
+<td>${stock.name}</td>
+<td class="price">₹${stock.price}</td>
+</tr>
+`;
+
+});
+
+document.getElementById("status").innerText="Last updated: " + new Date().toLocaleTimeString();
+
+}
+
+// Auto refresh every 60 seconds
+setInterval(runScreener, 60000);
+
+</script>
+
+</body>
+</html>
