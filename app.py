@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
+
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -79,9 +80,11 @@ def home(request: Request):
     stocks = fetch_stocks()
 
     return templates.TemplateResponse(
-        "index.html",
-        {"request": request, "stocks": stocks}
+        request=request,
+        name="index.html",
+        context={"stocks": stocks}
     )
+
 
 @app.get("/run")
 def run_screener():
